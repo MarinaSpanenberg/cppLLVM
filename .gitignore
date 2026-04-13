@@ -1,3 +1,4 @@
+*.vscode
 *.bc
 *.ll
 bin/

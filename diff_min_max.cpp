@@ -14,7 +14,7 @@ int main() {
     // alocar memoria para o programa
     Module *module = new Module("modulo", context);
 
-    // define o tipe int64
+    // define o type int64
     Type *i64 = Type::getInt64Ty(context);
     // Tipo da func e seus parametros
     FunctionType *func_type = FunctionType::get(i64, {i64, i64}, false);

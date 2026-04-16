@@ -124,13 +124,15 @@ Ambas as implementações seguiram uma estrutura semelhante:
         // --- FACTORIAL ---
         // IRBuilder definido antes no código, usando o contexto, assim o IRBuilder é movido entre os BasicBlocks conferme a necessidade
         ir_builder.SetInsertPoint(entry);
-        ir_builder.CreateBr(loop);
+        
+        Value* is_pos = ir_builder.CreateICmpSGE(n, ConstantInt::get(i64, 0), "is_pos");
+        ir_builder.CreateCondBr(is_pos, loop, end);
 
         ir_builder.SetInsertPoint(loop);
         ```
 5. **Geração das instruções LLVM;**
     - Com o builder na posição correta, é possível criar a lógica da função.
-    - As duas funções possuis implementações diferentes para sua lógica, suas diferenças em detalhes na seção **2.3 Diferenças entre as implementações**.
+    - As duas funções possuem implementações diferentes para sua lógica, suas diferenças em detalhes na seção **2.3 Diferenças entre as implementações**.
         ```c++
         // --- DIFF_MIN_MAX ---
         // Cmp: comparacao, comparar se a eh maior que b
@@ -145,27 +147,44 @@ Ambas as implementações seguiram uma estrutura semelhante:
         Builder.CreateRet(Result); // Return
 
         // --- FACTORIAL ---
-        // acumulador res iniciando em 1
+        // phinode para acumulador res iniciando em 1 e ocupando 2 nmrs reservados
         const auto res = ir_builder.CreatePHI(i64, 2);
         res->addIncoming(ConstantInt::get(i64, 1), entry);
 
-        // contador i iniciando em n
+        // phinode para contador i iniciando em n
         const auto i = ir_builder.CreatePHI(i64, 2, "i");
         i->addIncoming(n, entry);
 
         // if i > 1
         Value* cmp = ir_builder.CreateICmpSGT(i, ConstantInt::get(i64, 1), "cmptmp");
+
         // res = res * i 
         Value* next_res = ir_builder.CreateMul(res, i, "next_res");
+
         //i = i - 1
         Value* next_i = ir_builder.CreateSub(i, ConstantInt::get(i64, 1), "next_i");
         
+        // atualizacao dos phinodes
         res->addIncoming(next_res, loop);
         i->addIncoming(next_i, loop);
+
+        // if i > 1, continua no loop, senao vai pro end
         ir_builder.CreateCondBr(cmp, loop, end);
+
+        // bloco final
         ir_builder.SetInsertPoint(end);
-        // Retorno da função
-        ir_builder.CreateRet(res);
+
+        // phinode para valor final do retorno
+        const auto final_res = ir_builder.CreatePHI(i64, 2);
+
+        // se vem do loop, retorna o fatorial
+        final_res->addIncoming(res, loop);
+
+        // se vem do entry, ou seja, n < 0, retorna 0
+        final_res->addIncoming(ConstantInt::get(i64, 0), entry);
+
+        // retorno do valor final
+        ir_builder.CreateRet(final_res);
         ```
 
 6. **Validação com verifyFunction;**

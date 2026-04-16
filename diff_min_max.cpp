@@ -29,7 +29,7 @@ int main() {
     auto arg_a = args++;
     arg_a->setName("a");
     auto arg_b = args++;
-    arg_a->setName("b");
+    arg_b->setName("b");
 
     // Cria o Basic BLock (corpo da funcao/instrucoes da funcao)
     BasicBlock *basic_block = BasicBlock::Create(context, "entry", function);

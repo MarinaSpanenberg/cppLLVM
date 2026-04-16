@@ -34,7 +34,7 @@ int main() {
 
     // logica da funcao
 
-    // inicio meu builder no bloco de entrada
+    // inicia builder no bloco de entrada
     ir_builder.SetInsertPoint(entry);
 
     // verifica se o valor é positivo, ou seja n >= 0
@@ -48,7 +48,7 @@ int main() {
     ir_builder.SetInsertPoint(loop);
 
     // phinode para acumulador res iniciando em 1 e ocupando 2 nmrs reservados
-    const auto res = ir_builder.CreatePHI(i64, 2);
+    const auto res = ir_builder.CreatePHI(i64, 2, "res");
     res->addIncoming(ConstantInt::get(i64, 1), entry);
 
     // phinode para contador i iniciando em n

@@ -95,7 +95,7 @@ Ambas as implementações seguiram uma estrutura semelhante:
         auto arg_a = args++;
         arg_a->setName("a");
         auto arg_b = args++;
-        arg_a->setName("b");
+        arg_b->setName("b");
 
         // --- FACTORIAL ---
         Value* n = function->arg_begin();

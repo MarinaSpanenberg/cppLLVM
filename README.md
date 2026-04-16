@@ -42,13 +42,22 @@ Sua geração foi realizada a partir das principais estruturas fornecidas pela b
 - IRBuilder
 
 Ambas as implementações seguiram uma estrutura semelhante:
+`#includes` da implementação IR em c++:
+    ```c+
+    #include <llvm/IR/LLVMContext.h>
+    #include <llvm/IR/Module.h>
+    #include <llvm/IR/IRBuilder.h>
+    #include <llvm/IR/Verifier.h>
+    #include <llvm/Support/raw_ostream.h>
+    #include <llvm/Bitcode/BitcodeWriter.h>
+    ```
 `using namespace llvm` apenas para tornar o código mais conciso.
 1. **Criação do contexto global;**
     - Criando o contexto onde todos os dados são manipulados usando `LLVMContext`
         ```c++
         LLVMContext context;
         ```
-2. ****Criação do módulo;**
+2. **Criação do módulo;**
     - Módulo principal onde a memória é alocada, armazenando as funções e variáveis do programa.
         ```c++
         // --- DIFF_MIN_MAX ---

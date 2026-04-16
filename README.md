@@ -198,7 +198,7 @@ Ambas as implementações seguiram uma estrutura semelhante:
         ```
 
 7. **Exportação para .ll e .bc.**
-	- Usando `llvm/Support/raw_ostream.h` para definir o tipo de output dos dois formatos, foi possível gerar a representação textual somente "printando" no arquivo .ll, e o bitecode (.bc) gerado usando a função `WriteBitcodeToFile`, da lib llvm/Bitcode/BitcodeWriter.h.
+	- Usando `llvm/Support/raw_ostream.h` para definir o tipo de output dos dois formatos, foi possível gerar a representação textual somente "printando" no arquivo .ll, e o bitcode (.bc) gerado usando a função `WriteBitcodeToFile`, da lib llvm/Bitcode/BitcodeWriter.h.
 
         ```c++
         // Gerar representacao textual .ll
@@ -246,17 +246,17 @@ Todo o processo está no Makefile desse projeto, usando duas formas diferentes d
 
 - **Linkagem**:
 Aqui onde a pipeline se difere entre as duas funções:
-    - `diff_min_max`: a linkagem foi feita entre o arquivo de teste `test_diff.c`, e o object file obitido ao compilar o bitecode com o `llc` (`llvm static compiler`) passando a flag `-filetype=obj` (OBS: não necessária, pula a geração do assembly).
+    - `diff_min_max`: a linkagem foi feita entre o arquivo de teste `test_diff.c`, e o object file obitido ao compilar o bitcode com o `llc` (`llvm static compiler`) passando a flag `-filetype=obj` (OBS: não necessária, pula a geração do assembly).
         ```shell
-        # Compilar o bitecode para .o output file:
-        llc factorial.ll -o bin/factorial.s
+        # Compilar o bitcode para binario, pulando o assembly (com a flag -filetype=obj) que llvm compiler (llc) gera:
+        llc -filetype=obj diff_min_max.bc -o bin/diff_min_max.o
         # Linkar a função com o programa de teste:
-        clang test/test_factorial.c bin/factorial.s -o prog_fact
+        clang test/test_diff.c bin/diff_min_max.o -o prog_diff
         ```
 
     - `factorial`: usando também o `llc` foi compilado a representação textual para assembly diretamente, após foi realizada a linkagem com o arquivo de testes `test_factorial.c`.
         ```shell
-        # Compilar o bitecode para .o output file:
+	    # Compilar o .ll para assembly file:
         llc factorial.ll -o bin/factorial.s
         # Linkar a função com o programa de teste:
         clang test/test_factorial.c bin/factorial.s -o prog_fact

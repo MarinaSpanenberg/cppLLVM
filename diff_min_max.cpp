@@ -28,7 +28,7 @@ int main() {
     // pega o primeiro e segundo argumento da funcao e define seus nomes
     auto arg_a = args++;
     arg_a->setName("a");
-    auto arg_b = args++;
+    auto arg_b = args;
     arg_b->setName("b");
 
     // Cria o Basic BLock (corpo da funcao/instrucoes da funcao)
